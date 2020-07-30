@@ -7,7 +7,7 @@
 #ifndef JWINSERVICE_WIN_SERVICE_H
 #define JWINSERVICE_WIN_SERVICE_H
 
-extern TCHAR SVCNAME[];
+extern TCHAR SVCNAME[255];
 
 VOID SvcInstall(void);
 VOID WINAPI SvcCtrlHandler(DWORD);

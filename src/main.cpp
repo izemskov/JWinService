@@ -6,17 +6,14 @@
 
 #include <windows.h>
 #include <tchar.h>
-#include <iostream>
-#include <io.h>
 
+#include "conf_parser.h"
 #include "win_service.h"
 
-int __cdecl _tmain(int argc, TCHAR *argv[])
-{
-    if (_access("jwinservice.ini", 0) != 0) {
-        std::cout << "Cannot find configuration file jwinservice.ini";
-        return -1;
-    }
+int __cdecl _tmain(int argc, TCHAR *argv[]) {
+    int status = readServiceName(SVCNAME, 255) != 0;
+    if (status != 0)
+        return status;
 
     /*// If command-line parameter is "install", install the service.
     // Otherwise, the service is probably being started by the SCM.
@@ -27,7 +24,7 @@ int __cdecl _tmain(int argc, TCHAR *argv[])
         return 0;
     }*/
 
-    SERVICE_TABLE_ENTRY DispatchTable[] =
+    /*SERVICE_TABLE_ENTRY DispatchTable[] =
             {
                     { SVCNAME, (LPSERVICE_MAIN_FUNCTION)SvcMain },
                     { NULL, NULL }
@@ -36,7 +33,7 @@ int __cdecl _tmain(int argc, TCHAR *argv[])
     if (!StartServiceCtrlDispatcher(DispatchTable)) {
         SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
         return -1;
-    }
+    }*/
 
     return 0;
 }

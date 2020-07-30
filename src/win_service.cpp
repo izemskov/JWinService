@@ -16,7 +16,7 @@ SERVICE_STATUS          gSvcStatus;
 SERVICE_STATUS_HANDLE   gSvcStatusHandle;
 HANDLE                  ghSvcStopEvent = NULL;
 
-TCHAR SVCNAME[] = _T("JWinService");
+TCHAR SVCNAME[255];
 
 /* === For service run === */
 
