@@ -6,10 +6,21 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include <iostream>
 
 #include "conf_parser.h"
 #include "win_service.h"
 #include "win_service_ctrl.h"
+
+void printUsages() {
+    std::cout << "Usage: " << std::endl;
+    std::cout << "  JWinService.exe [command]" << std::endl;
+    std::cout << "Available commands:" << std::endl;
+    std::cout << "  install   - install the service to Service Control Manager" << std::endl;
+    std::cout << "  uninstall - uninstall the service" << std::endl;
+    std::cout << "  start     - start the service" << std::endl;
+    std::cout << "  stop      - stop the service" << std::endl;
+}
 
 int __cdecl _tmain(int argc, TCHAR *argv[]) {
     int status = readServiceName(SVCNAME, 255) != 0;
@@ -20,18 +31,17 @@ int __cdecl _tmain(int argc, TCHAR *argv[]) {
         if (lstrcmpi(argv[1], TEXT("-install")) == 0) {
             return SvcInstall();
         }
+        else if (lstrcmpi(argv[1], TEXT("-uninstall")) == 0) {
+            return SvcUnistall();
+        }
+        else {
+            std::cout << "Unknown command" << std::endl << std::endl;
+            printUsages();
+            return 1;
+        }
     }
 
-    /*// If command-line parameter is "install", install the service.
-    // Otherwise, the service is probably being started by the SCM.
-
-    if (lstrcmpi(argv[1], TEXT("install")) == 0)
-    {
-        SvcInstall();
-        return 0;
-    }*/
-
-    /*SERVICE_TABLE_ENTRY DispatchTable[] =
+    SERVICE_TABLE_ENTRY DispatchTable[] =
             {
                     { SVCNAME, (LPSERVICE_MAIN_FUNCTION)SvcMain },
                     { NULL, NULL }
@@ -40,7 +50,7 @@ int __cdecl _tmain(int argc, TCHAR *argv[]) {
     if (!StartServiceCtrlDispatcher(DispatchTable)) {
         SvcReportEvent(TEXT("StartServiceCtrlDispatcher"));
         return -1;
-    }*/
+    }
 
     return 0;
 }

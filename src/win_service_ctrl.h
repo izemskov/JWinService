@@ -8,5 +8,6 @@
 #define JWINSERVICE_WIN_SERVICE_CTRL_H
 
 int SvcInstall();
+int SvcUnistall();
 
 #endif //JWINSERVICE_WIN_SERVICE_CTRL_H

@@ -61,3 +61,42 @@ int SvcInstall()
     CloseServiceHandle(schService);
     CloseServiceHandle(schSCManager);
 }
+
+int SvcUnistall() {
+    SC_HANDLE schSCManager;
+    SC_HANDLE schService;
+    SERVICE_STATUS ssStatus;
+
+    schSCManager = OpenSCManager(
+            NULL,                    // local computer
+            NULL,                    // ServicesActive database
+            SC_MANAGER_ALL_ACCESS);  // full access rights
+
+    if (NULL == schSCManager) {
+        std::cout << "OpenSCManager failed with code " << GetLastError() << std::endl;
+        return 1;
+    }
+
+    schService = OpenService(
+            schSCManager,       // SCM database
+            SVCNAME,            // name of service
+            DELETE);            // need delete access
+
+    if (schService == NULL) {
+        std::cout << "OpenService failed with code " << GetLastError() << std::endl;
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+
+    if (!DeleteService(schService)) {
+        std::cout << "Uninstall service failed with code " << GetLastError() << std::endl;
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+    else
+        std::cout << "Service uninstalled successfully" << std::endl;
+
+    CloseServiceHandle(schService);
+    CloseServiceHandle(schSCManager);
+}
