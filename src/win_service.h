@@ -9,7 +9,6 @@
 
 extern TCHAR SVCNAME[255];
 
-VOID SvcInstall(void);
 VOID WINAPI SvcCtrlHandler(DWORD);
 VOID WINAPI SvcMain(DWORD, LPTSTR *);
 

@@ -9,11 +9,18 @@
 
 #include "conf_parser.h"
 #include "win_service.h"
+#include "win_service_ctrl.h"
 
 int __cdecl _tmain(int argc, TCHAR *argv[]) {
     int status = readServiceName(SVCNAME, 255) != 0;
     if (status != 0)
         return status;
+
+    if (argc > 1) {
+        if (lstrcmpi(argv[1], TEXT("-install")) == 0) {
+            return SvcInstall();
+        }
+    }
 
     /*// If command-line parameter is "install", install the service.
     // Otherwise, the service is probably being started by the SCM.
