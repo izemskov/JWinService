@@ -9,6 +9,7 @@
 #include <strsafe.h>
 
 #include "jwinsvcerror.h"
+#include "java_process_run.h"
 
 #include "win_service.h"
 
@@ -58,10 +59,17 @@ VOID SvcInit(DWORD dwArgc, LPTSTR *lpszArgv) {
 
     ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 
-    // TODO
+    if (runJavaProcess() != 0) {
+        ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+        return;
+    }
 
     while (1) {
         WaitForSingleObject(ghSvcStopEvent, INFINITE);
+
+        TerminateProcess(pi.hProcess, 0);
+        WaitForSingleObject(pi.hProcess, 30000);
+
         ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
         return;
     }

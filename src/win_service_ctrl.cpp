@@ -197,8 +197,8 @@ int SvcStart() {
 
     if (!StartService(
             schService,  // handle to service
-            0,           // number of arguments
-            NULL))      // no arguments
+            0,           // number of javaArguments
+            NULL))      // no javaArguments
     {
         std::cout << "StartService failed with code " << GetLastError() << std::endl;
         CloseServiceHandle(schService);

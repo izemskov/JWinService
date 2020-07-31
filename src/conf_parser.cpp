@@ -13,6 +13,9 @@
 
 TCHAR CONF_FILE[] = _T("jwinservice.ini");
 
+bool findJavaInRegistry = false;
+TCHAR javaArguments[255];
+
 static int getConfigFullPath(TCHAR * configFullPath) {
     TCHAR szPath[MAX_PATH];
     if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
@@ -49,6 +52,22 @@ int readServiceName(LPTSTR serviceName, size_t maxServiceNameSize) {
     int size = GetPrivateProfileString(_T(CONF_INI_SECTION_SERVICE), _T(CONF_INI_VALUE_SERVICE_NAME), _T(""), serviceName, maxServiceNameSize, configFullPath);
     if (size == 0) {
         std::cout << "Cannot read " CONF_INI_VALUE_SERVICE_NAME " from configuration file" << std::endl;
+        return 1;
+    }
+
+    TCHAR findJavaInRegistryStr[MAX_PATH];
+    size = GetPrivateProfileString(_T(CONF_INI_SECTION_SERVICE), _T(CONF_INI_VALUE_FIND_JAVA_IN_REGISTRY), _T(""), findJavaInRegistryStr, MAX_PATH, configFullPath);
+    if (size == 0) {
+        std::cout << "Cannot read " CONF_INI_VALUE_FIND_JAVA_IN_REGISTRY " from configuration file" << std::endl;
+        return 1;
+    }
+    if (lstrcmpi(findJavaInRegistryStr, TEXT("true"))== 0) {
+        findJavaInRegistry = true;
+    }
+
+    size = GetPrivateProfileString(_T(CONF_INI_SECTION_SERVICE), _T(CONF_INI_VALUE_JAVA_ARGUMENTS), _T(""), javaArguments, MAX_PATH, configFullPath);
+    if (size == 0) {
+        std::cout << "Cannot read " CONF_INI_VALUE_JAVA_ARGUMENTS " from configuration file" << std::endl;
         return 1;
     }
 
