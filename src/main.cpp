@@ -20,6 +20,8 @@ void printUsages() {
     std::cout << "  -uninstall - uninstall the service" << std::endl;
     std::cout << "  -start     - start the service" << std::endl;
     std::cout << "  -stop      - stop the service" << std::endl;
+    std::cout << "  -enable    - enable service" << std::endl;
+    std::cout << "  -disable   - disable service" << std::endl;
 }
 
 int __cdecl _tmain(int argc, TCHAR *argv[]) {
@@ -39,6 +41,12 @@ int __cdecl _tmain(int argc, TCHAR *argv[]) {
         }
         else if (lstrcmpi(argv[1], TEXT("-stop")) == 0) {
             return SvcStop();
+        }
+        else if (lstrcmpi(argv[1], TEXT("-enable")) == 0) {
+            return SvcEnable();
+        }
+        else if (lstrcmpi(argv[1], TEXT("-disable")) == 0) {
+            return SvcDisable();
         }
         else {
             std::cout << "Unknown command" << std::endl << std::endl;

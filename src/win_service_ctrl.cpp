@@ -41,7 +41,7 @@ int SvcInstall()
         SVCNAME,                   // service name to display
         SERVICE_ALL_ACCESS,        // desired access
         SERVICE_WIN32_OWN_PROCESS, // service type
-        SERVICE_DEMAND_START,      // start type
+        SERVICE_AUTO_START,        // start type
         SERVICE_ERROR_NORMAL,      // error control type
         szPath,                    // path to service's binary
         NULL,                      // no load ordering group
@@ -403,6 +403,110 @@ int SvcStop() {
         }
     }
     printf("Service stopped successfully\n");
+
+    CloseServiceHandle(schService);
+    CloseServiceHandle(schSCManager);
+
+    return 0;
+}
+
+int SvcEnable() {
+    SC_HANDLE schSCManager;
+    SC_HANDLE schService;
+
+    schSCManager = OpenSCManager(
+            NULL,                    // local computer
+            NULL,                    // ServicesActive database
+            SC_MANAGER_ALL_ACCESS);  // full access rights
+
+    if (NULL == schSCManager) {
+        printf("OpenSCManager failed (%d)\n", GetLastError());
+        return 1;
+    }
+
+    schService = OpenService(
+            schSCManager,            // SCM database
+            SVCNAME,                 // name of service
+            SERVICE_CHANGE_CONFIG);  // need change config access
+
+    if (schService == NULL) {
+        printf("OpenService failed (%d)\n", GetLastError());
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+
+    if (!ChangeServiceConfig(
+            schService,            // handle of service
+            SERVICE_NO_CHANGE,     // service type: no change
+            SERVICE_DEMAND_START,  // service start type
+            SERVICE_NO_CHANGE,     // error control: no change
+            NULL,                  // binary path: no change
+            NULL,                  // load order group: no change
+            NULL,                  // tag ID: no change
+            NULL,                  // dependencies: no change
+            NULL,                  // account name: no change
+            NULL,                  // password: no change
+            NULL))                // display name: no change
+    {
+        printf("ChangeServiceConfig failed (%d)\n", GetLastError());
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+
+    printf("Service enabled successfully.\n");
+
+    CloseServiceHandle(schService);
+    CloseServiceHandle(schSCManager);
+
+    return 0;
+}
+
+int SvcDisable() {
+    SC_HANDLE schSCManager;
+    SC_HANDLE schService;
+
+    schSCManager = OpenSCManager(
+            NULL,                    // local computer
+            NULL,                    // ServicesActive database
+            SC_MANAGER_ALL_ACCESS);  // full access rights
+
+    if (NULL == schSCManager) {
+        printf("OpenSCManager failed (%d)\n", GetLastError());
+        return 1;
+    }
+
+    schService = OpenService(
+            schSCManager,            // SCM database
+            SVCNAME,                 // name of service
+            SERVICE_CHANGE_CONFIG);  // need change config access
+
+    if (schService == NULL) {
+        printf("OpenService failed (%d)\n", GetLastError());
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+
+    if (!ChangeServiceConfig(
+            schService,        // handle of service
+            SERVICE_NO_CHANGE, // service type: no change
+            SERVICE_DISABLED,  // service start type
+            SERVICE_NO_CHANGE, // error control: no change
+            NULL,              // binary path: no change
+            NULL,              // load order group: no change
+            NULL,              // tag ID: no change
+            NULL,              // dependencies: no change
+            NULL,              // account name: no change
+            NULL,              // password: no change
+            NULL) )            // display name: no change
+    {
+        printf("ChangeServiceConfig failed (%d)\n", GetLastError());
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
+        return 1;
+    }
+
+    printf("Service disabled successfully.\n");
 
     CloseServiceHandle(schService);
     CloseServiceHandle(schSCManager);
