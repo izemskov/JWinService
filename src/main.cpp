@@ -14,12 +14,12 @@
 
 void printUsages() {
     std::cout << "Usage: " << std::endl;
-    std::cout << "  JWinService.exe [command]" << std::endl;
+    std::cout << "  JWinService.exe [-command]" << std::endl;
     std::cout << "Available commands:" << std::endl;
-    std::cout << "  install   - install the service to Service Control Manager" << std::endl;
-    std::cout << "  uninstall - uninstall the service" << std::endl;
-    std::cout << "  start     - start the service" << std::endl;
-    std::cout << "  stop      - stop the service" << std::endl;
+    std::cout << "  -install   - install the service to Service Control Manager" << std::endl;
+    std::cout << "  -uninstall - uninstall the service" << std::endl;
+    std::cout << "  -start     - start the service" << std::endl;
+    std::cout << "  -stop      - stop the service" << std::endl;
 }
 
 int __cdecl _tmain(int argc, TCHAR *argv[]) {
@@ -33,6 +33,12 @@ int __cdecl _tmain(int argc, TCHAR *argv[]) {
         }
         else if (lstrcmpi(argv[1], TEXT("-uninstall")) == 0) {
             return SvcUnistall();
+        }
+        else if (lstrcmpi(argv[1], TEXT("-start")) == 0) {
+            return SvcStart();
+        }
+        else if (lstrcmpi(argv[1], TEXT("-stop")) == 0) {
+            return SvcStop();
         }
         else {
             std::cout << "Unknown command" << std::endl << std::endl;

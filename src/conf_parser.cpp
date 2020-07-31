@@ -11,14 +11,42 @@
 
 #include "conf_parser.h"
 
-int readServiceName(LPTSTR serviceName, size_t maxServiceNameSize) {
-    if (_access(CONF_FILE, 0) != 0) {
-        std::cout << "Cannot find configuration file " CONF_FILE << std::endl;
+TCHAR CONF_FILE[] = _T("jwinservice.ini");
+
+static int getConfigFullPath(TCHAR * configFullPath) {
+    TCHAR szPath[MAX_PATH];
+    if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
+        std::cout << "Cannot find executable path " << GetLastError() << std::endl;
         return 1;
     }
 
-    LPCTSTR path = _T(".\\" CONF_FILE);
-    int size = GetPrivateProfileString(_T(CONF_INI_SECTION_SERVICE), _T(CONF_INI_VALUE_SERVICE_NAME), _T(""), serviceName, maxServiceNameSize, path);
+    TCHAR * lastSlash = _tcsrchr(szPath, '\\');
+    if (lastSlash == NULL) {
+        std::cout << "Cannot get current directory path" << std::endl;
+        return 1;
+    }
+
+    _tcsncpy(configFullPath, szPath, lastSlash - szPath + 1);
+    configFullPath[lastSlash - szPath + 1] = _T('\0');
+
+    _tcscat_s(configFullPath, MAX_PATH, CONF_FILE);
+
+    return 0;
+}
+
+int readServiceName(LPTSTR serviceName, size_t maxServiceNameSize) {
+    TCHAR configFullPath[MAX_PATH];
+
+    int status = getConfigFullPath(configFullPath);
+    if (status != 0)
+        return status;
+
+    if (_access(configFullPath, 0) != 0) {
+        std::cout << "Cannot find configuration file " << CONF_FILE << std::endl;
+        return 1;
+    }
+
+    int size = GetPrivateProfileString(_T(CONF_INI_SECTION_SERVICE), _T(CONF_INI_VALUE_SERVICE_NAME), _T(""), serviceName, maxServiceNameSize, configFullPath);
     if (size == 0) {
         std::cout << "Cannot read " CONF_INI_VALUE_SERVICE_NAME " from configuration file" << std::endl;
         return 1;

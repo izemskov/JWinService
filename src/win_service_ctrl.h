@@ -9,5 +9,7 @@
 
 int SvcInstall();
 int SvcUnistall();
+int SvcStart();
+int SvcStop();
 
 #endif //JWINSERVICE_WIN_SERVICE_CTRL_H

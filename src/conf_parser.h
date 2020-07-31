@@ -7,8 +7,6 @@
 #ifndef JWINSERVICE_CONF_PARSER_H
 #define JWINSERVICE_CONF_PARSER_H
 
-#define CONF_FILE "jwinservice.ini"
-
 #define CONF_INI_SECTION_SERVICE    "Service"
 #define CONF_INI_VALUE_SERVICE_NAME "ServiceName"
 
