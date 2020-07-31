@@ -37,6 +37,10 @@ Arguments for JVM
 
 ## Usage
 
+```
+JWinService.exe [-command]
+```
+
 * -install   - install the service to Service Control Manager
 * -uninstall - uninstall the service
 * -start     - start the service
